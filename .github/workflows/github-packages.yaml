@@ -31,6 +31,6 @@ jobs:
 
       - name: Publish to GitHub Packages
         if: ${{ github.event.base_ref == 'refs/heads/main' }}
-        run: mvn --batch-mode deploy
+        run: mvn --batch-mode deploy "-Dartifact.version=${{ steps.vars.outputs.tag }}"
         env:
           GITHUB_TOKEN: ${{ github.token }}
