@@ -1,0 +1,22 @@
+name: Releases
+
+on: 
+  push:
+    tags: [ 'v*' ]
+
+jobs:
+  build:
+    if: ${{ github.event.base_ref =='refs/heads/main' }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Create release
+      uses: ncipollo/release-action@v1
+      with:
+        artifacts: "release.tar.gz,*.jar"
+        bodyFile: "release.md"
+        token: ${{ secrets.GITHUB_TOKEN }}

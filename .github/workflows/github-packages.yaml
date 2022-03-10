@@ -1,0 +1,36 @@
+name: GitHub Package
+
+on: 
+  push:
+    tags: [ 'v*' ]
+
+jobs:
+  publish:
+    if: ${{ github.event.base_ref =='refs/heads/main' }}
+    runs-on: ubuntu-latest
+    permissions: 
+      contents: read
+      packages: write 
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - id: vars
+        name: Setup job variables      
+        run: |
+          echo "::set-output name=tag::${GITHUB_REF#refs/tags/v}"
+
+      - name: Set up Java for publishing to GitHub Packages
+        uses: actions/setup-java@v2
+        with:
+          java-version: '8'
+          distribution: 'temurin'
+          cache: maven
+
+      - name: Build with Maven
+        run: mvn --batch-mode package --file pom.xml "-Dartifact.version=${{ steps.vars.outputs.tag }}"
+
+      - name: Publish to GitHub Packages
+        run: mvn --batch-mode deploy
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
