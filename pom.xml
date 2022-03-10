@@ -12,7 +12,7 @@
 
     <groupId>com.aureum.springboot</groupId>
     <artifactId>mediator-spring-boot-starter</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>${artifact.version}</version>
 
     <developers>
         <developer>
