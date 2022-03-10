@@ -5,8 +5,7 @@ on:
     tags: [ 'v*' ]
 
 jobs:
-  publish:
-    if: ${{ github.event.base_ref =='refs/heads/main' }}
+  publish:    
     runs-on: ubuntu-latest
     permissions: 
       contents: read
@@ -31,6 +30,7 @@ jobs:
         run: mvn --batch-mode package --file pom.xml "-Dartifact.version=${{ steps.vars.outputs.tag }}"
 
       - name: Publish to GitHub Packages
+        if: ${{ github.event.base_ref == 'refs/heads/main' }}
         run: mvn --batch-mode deploy
         env:
           GITHUB_TOKEN: ${{ github.token }}
