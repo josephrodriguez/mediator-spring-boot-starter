@@ -1,24 +1,32 @@
-package autoconfiguration;
-
 import com.aureum.springboot.config.SpringBootMediatorAutoConfiguration;
+import com.aureum.springboot.service.Mediator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.util.Assert;
 
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = { SpringBootMediatorAutoConfiguration.class })
-public class SpringBootMediatorAutoConfigurationTest {
+public class AutoConfigurationTest {
 
     @Test
-    void testApplicationContext() {
+    void executeApplicationContext() {
         final ApplicationContextRunner contextRunner = new ApplicationContextRunner();
 
         contextRunner.withUserConfiguration(SpringBootMediatorAutoConfiguration.class)
                         .run(context -> {
-                            Assert.notNull(context, "ApplicationContextRunner should not be null.");
+                            Assert.notNull(context, "ApplicationContext should not be null.");
                         });
+    }
+
+    @Test
+    void executeMediatorService() {
+
+        final ApplicationContextRunner contextRunner = new ApplicationContextRunner();
+
+        contextRunner.withUserConfiguration(SpringBootMediatorAutoConfiguration.class)
+                .run(context -> {
+                    Assert.notNull(context.getBean(Mediator.class), "Mediator bean can´t be null.");
+                });
     }
 }
