@@ -1,20 +1,31 @@
 package com.aureum.springboot.processor;
 
-import com.aureum.springboot.contracts.Event;
-import com.aureum.springboot.contracts.EventHandler;
+import com.aureum.springboot.interfaces.Event;
+import com.aureum.springboot.interfaces.EventHandler;
 
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 
+/**
+ * @param <TEvent>
+ */
 public class EventHandlerProcessor<TEvent extends Event> {
 
-    private List<EventHandler<TEvent>> handlers;
+    /**
+     *
+     */
+    private final Collection<EventHandler<TEvent>> handlers;
 
-    public EventHandlerProcessor() {
-        handlers = Collections.synchronizedList(new ArrayList<>());
+    /**
+     * @param handlers
+     */
+    public EventHandlerProcessor(Collection<EventHandler<TEvent>> handlers) {
+        this.handlers = Collections.synchronizedCollection(handlers);
     }
 
+    /**
+     * @param event
+     */
     public void handle(TEvent event) {
 
         if(event == null)
@@ -22,13 +33,4 @@ public class EventHandlerProcessor<TEvent extends Event> {
 
         handlers.forEach(handler -> handler.handle(event));
     }
-
-    public void register(EventHandler<TEvent> handler) {
-        handlers.add(handler);
-    }
-
-    public void unregister(EventHandler<TEvent> handler) {
-        handlers.remove(handler);
-    }
-
 }
