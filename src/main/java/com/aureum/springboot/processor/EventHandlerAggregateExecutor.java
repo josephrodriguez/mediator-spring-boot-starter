@@ -9,7 +9,7 @@ import java.util.Collections;
 /**
  * @param <TEvent>
  */
-public class EventHandlerProcessor<TEvent extends Event> {
+public class EventHandlerAggregateExecutor<TEvent extends Event> {
 
     /**
      *
@@ -19,7 +19,7 @@ public class EventHandlerProcessor<TEvent extends Event> {
     /**
      * @param handlers
      */
-    public EventHandlerProcessor(Collection<EventHandler<TEvent>> handlers) {
+    public EventHandlerAggregateExecutor(Collection<EventHandler<TEvent>> handlers) {
         this.handlers = Collections.synchronizedCollection(handlers);
     }
 
