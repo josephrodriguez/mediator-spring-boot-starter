@@ -1,9 +1,10 @@
 package com.aureum.springboot.service;
 
+import com.aureum.springboot.exceptions.UnsupportedRequestException;
 import com.aureum.springboot.interfaces.*;
 import com.aureum.springboot.core.Lazy;
 import com.aureum.springboot.exceptions.UnsupportedEventException;
-import com.aureum.springboot.processor.EventHandlerAggregateExecutor;
+import com.aureum.springboot.executors.EventHandlerAggregateExecutor;
 import org.springframework.beans.factory.ListableBeanFactory;
 
 import java.lang.reflect.ParameterizedType;
@@ -12,6 +13,8 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.stream.Collectors;
+
+import static com.aureum.springboot.core.BooleanExtensions.not;
 
 /**
  *
@@ -24,10 +27,16 @@ public class Mediator implements Publisher, Sender {
     private final Lazy<ConcurrentMap<Class<?>, EventHandlerAggregateExecutor>> eventHandlersMap;
 
     /**
+     *
+     */
+    private final Lazy<ConcurrentMap<Class<?>, RequestHandler>> requestHandlersMap;
+
+    /**
      * @param factory
      */
     public Mediator(ListableBeanFactory factory) {
         this.eventHandlersMap = new Lazy<>(() -> getEventHandlersMap(factory));
+        this.requestHandlersMap = new Lazy<>(() -> getRequestHandlers(factory));
     }
 
     /**
@@ -40,19 +49,52 @@ public class Mediator implements Publisher, Sender {
         if (event == null)
             throw new IllegalArgumentException("Undefined event argument.");
 
-        ConcurrentMap<Class<?>, EventHandlerAggregateExecutor> map = eventHandlersMap.get();
+        Class<? extends Event> eventClazz = event.getClass();
 
-        if (!map.containsKey(event.getClass()))
-            throw new UnsupportedEventException(event.getClass());
+        boolean supportedEvent = eventHandlersMap
+                .get()
+                .containsKey(eventClazz);
 
-        EventHandlerAggregateExecutor<TEvent> processor = map.get(event.getClass());
+        boolean unsupportedEvent = not(supportedEvent);
+        if (unsupportedEvent)
+            throw new UnsupportedEventException(eventClazz);
+
+        EventHandlerAggregateExecutor processor = eventHandlersMap
+                .get()
+                .get(eventClazz);
 
         processor.handle(event);
     }
 
+    /**
+     * @param request
+     * @param <Response>
+     * @return
+     * @throws UnsupportedRequestException
+     */
     @Override
-    public <Response> Response send(Request<Response> request) {
-        return null;
+    public <Response> Response send(Request<Response> request) throws UnsupportedRequestException {
+
+        if (request == null)
+            throw new IllegalArgumentException("Undefined request argument");
+
+        Class<? extends Request> requestClazz = request.getClass();
+
+        boolean supportedRequest = requestHandlersMap
+                .get()
+                .containsKey(requestClazz);
+
+        boolean unsupportedRequest = not(supportedRequest);
+        if (unsupportedRequest)
+            throw new UnsupportedRequestException(requestClazz);
+
+        RequestHandler<Request<Response>, Response> handler = requestHandlersMap
+                .get()
+                .get(requestClazz);
+
+        Response response = handler.handle(request);
+
+        return response;
     }
 
     /**
@@ -65,7 +107,7 @@ public class Mediator implements Publisher, Sender {
                 .getBeansOfType(EventHandler.class)
                 .values()
                 .stream()
-                .collect(Collectors.groupingBy(handler -> getEventTypeArgument(handler.getClass())))
+                .collect(Collectors.groupingBy(handler -> getEventHandlerTypeArgument(handler.getClass())))
                 .entrySet()
                 .stream()
                 .collect(Collectors.toMap(
@@ -76,20 +118,70 @@ public class Mediator implements Publisher, Sender {
     }
 
     /**
-     * @param handlerClass -
+     * @param factory
      * @return
      */
-    private Class<?> getEventTypeArgument(Class<?> handlerClass) {
+    private ConcurrentMap<Class<?>, RequestHandler> getRequestHandlers(ListableBeanFactory factory) {
 
-        ParameterizedType handlerInterface = Arrays.stream(handlerClass.getGenericInterfaces())
-                .filter(type -> type instanceof ParameterizedType)
-                .map(type -> (ParameterizedType) type)
-                .filter(type -> type.getRawType().equals(EventHandler.class))
-                .findFirst()
-                .get();
+        Map<Class<?>, RequestHandler> map = factory
+                .getBeansOfType(RequestHandler.class)
+                .values()
+                .stream()
+                .collect(Collectors.toMap(
+                        handler -> getRequestHandlerTypeArgument(handler.getClass()),
+                        handler -> handler
+                ));
 
-         Type[] arguments = handlerInterface.getActualTypeArguments();
+        return new ConcurrentHashMap<>(map);
+    }
+
+    /**
+     * @param handlerClazz -
+     * @return
+     */
+    private Class<?> getEventHandlerTypeArgument(Class<?> handlerClazz) {
+
+        Optional<ParameterizedType> eventHandlerInterface = getGenericInterfaceParameterizedType(
+                handlerClazz,
+                EventHandler.class);
+
+         Type[] arguments = eventHandlerInterface
+                 .orElseThrow(() -> new IllegalArgumentException(String.format("%s does not implement interface %s", handlerClazz, EventHandler.class)))
+                 .getActualTypeArguments();
 
          return (Class<?>) arguments[0];
+    }
+
+    /**
+     * @param handlerClazz
+     * @return
+     */
+    private Class<?> getRequestHandlerTypeArgument(Class<?> handlerClazz) {
+
+        Optional<ParameterizedType> requestHandlerInterface = getGenericInterfaceParameterizedType(
+                handlerClazz,
+                RequestHandler.class);
+
+        Type[] arguments = requestHandlerInterface
+                .orElseThrow(() -> new IllegalArgumentException(String.format("%s does not implement interface %s", handlerClazz, RequestHandler.class)))
+                .getActualTypeArguments();
+
+        return (Class<?>) arguments[0];
+    }
+
+    /**
+     * @param objectClazz
+     * @param interfaceClazz
+     * @return
+     */
+    private Optional<ParameterizedType> getGenericInterfaceParameterizedType(Class<?> objectClazz, Class<?> interfaceClazz) {
+
+        Optional<ParameterizedType> interfaceParameterizedType = Arrays.stream(objectClazz.getGenericInterfaces())
+                .filter(type -> type instanceof ParameterizedType)
+                .map(type -> (ParameterizedType) type)
+                .filter(type -> type.getRawType().equals(interfaceClazz))
+                .findFirst();
+
+        return interfaceParameterizedType;
     }
 }

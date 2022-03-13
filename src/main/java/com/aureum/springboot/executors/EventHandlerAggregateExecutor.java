@@ -1,4 +1,4 @@
-package com.aureum.springboot.processor;
+package com.aureum.springboot.executors;
 
 import com.aureum.springboot.interfaces.Event;
 import com.aureum.springboot.interfaces.EventHandler;

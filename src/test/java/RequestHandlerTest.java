@@ -1,4 +1,5 @@
 import com.aureum.springboot.config.SpringBootMediatorAutoConfiguration;
+import com.aureum.springboot.exceptions.UnsupportedRequestException;
 import com.aureum.springboot.service.Mediator;
 import handlers.EchoRequestHandler;
 import org.junit.jupiter.api.Test;
@@ -11,6 +12,8 @@ import responses.EchoResponse;
 
 import java.util.UUID;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 @ExtendWith(SpringExtension.class)
 public class RequestHandlerTest {
 
@@ -21,7 +24,7 @@ public class RequestHandlerTest {
 
         contextRunner.withUserConfiguration(SpringBootMediatorAutoConfiguration.class)
                 .run(context -> {
-                    context.getBean(Mediator.class).send(new EchoRequest("Hi"));
+                    assertThrows(UnsupportedRequestException.class, () -> context.getBean(Mediator.class).send(new EchoRequest("Hi")));
                 });
     }
 
