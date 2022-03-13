@@ -7,7 +7,7 @@ import java.time.ZoneOffset;
 
 public class DateTimeEvent implements Event {
 
-    private LocalDateTime datetime;
+    private final LocalDateTime datetime;
 
     public DateTimeEvent() {
         this.datetime = LocalDateTime.now(ZoneOffset.UTC);

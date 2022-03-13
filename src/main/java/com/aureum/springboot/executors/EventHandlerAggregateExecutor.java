@@ -1,4 +1,4 @@
-package com.aureum.springboot.processor;
+package com.aureum.springboot.executors;
 
 import com.aureum.springboot.interfaces.Event;
 import com.aureum.springboot.interfaces.EventHandler;
@@ -9,7 +9,7 @@ import java.util.Collections;
 /**
  * @param <TEvent>
  */
-public class EventHandlerProcessor<TEvent extends Event> {
+public class EventHandlerAggregateExecutor<TEvent extends Event> {
 
     /**
      *
@@ -19,7 +19,7 @@ public class EventHandlerProcessor<TEvent extends Event> {
     /**
      * @param handlers
      */
-    public EventHandlerProcessor(Collection<EventHandler<TEvent>> handlers) {
+    public EventHandlerAggregateExecutor(Collection<EventHandler<TEvent>> handlers) {
         this.handlers = Collections.synchronizedCollection(handlers);
     }
 
