@@ -2,6 +2,7 @@
 
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/josephrodriguez/spring-boot-mediator)
 ![GitHub Workflow Status (branch)](https://img.shields.io/github/workflow/status/josephrodriguez/mediator-spring-boot-starter/Maven%20Package/main)
+[![codecov](https://codecov.io/gh/josephrodriguez/mediator-spring-boot-starter/branch/main/graph/badge.svg?token=FVTMMF2BB1)](https://codecov.io/gh/josephrodriguez/mediator-spring-boot-starter)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=josephrodriguez_mediator-spring-boot-starter&metric=alert_status)](https://sonarcloud.io/dashboard?id=josephrodriguez_mediator-spring-boot-starter)
 [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=josephrodriguez_mediator-spring-boot-starter&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=josephrodriguez_mediator-spring-boot-starter)
 [![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=josephrodriguez_mediator-spring-boot-starter&metric=reliability_rating)](https://sonarcloud.io/dashboard?id=josephrodriguez_mediator-spring-boot-starter)
