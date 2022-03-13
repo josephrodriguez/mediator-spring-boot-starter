@@ -1,11 +1,9 @@
 package com.aureum.springboot.service;
 
-import com.aureum.springboot.interfaces.Event;
-import com.aureum.springboot.interfaces.EventHandler;
-import com.aureum.springboot.interfaces.Publisher;
+import com.aureum.springboot.interfaces.*;
 import com.aureum.springboot.core.Lazy;
 import com.aureum.springboot.exceptions.UnsupportedEventException;
-import com.aureum.springboot.processor.EventHandlerProcessor;
+import com.aureum.springboot.processor.EventHandlerAggregateExecutor;
 import org.springframework.beans.factory.ListableBeanFactory;
 
 import java.lang.reflect.ParameterizedType;
@@ -18,12 +16,12 @@ import java.util.stream.Collectors;
 /**
  *
  */
-public class Mediator implements Publisher {
+public class Mediator implements Publisher, Sender {
 
     /**
      *
      */
-    private final Lazy<ConcurrentMap<Class<?>, EventHandlerProcessor>> eventHandlersMap;
+    private final Lazy<ConcurrentMap<Class<?>, EventHandlerAggregateExecutor>> eventHandlersMap;
 
     /**
      * @param factory
@@ -42,23 +40,28 @@ public class Mediator implements Publisher {
         if (event == null)
             throw new IllegalArgumentException("Undefined event argument.");
 
-        ConcurrentMap<Class<?>, EventHandlerProcessor> map = eventHandlersMap.get();
+        ConcurrentMap<Class<?>, EventHandlerAggregateExecutor> map = eventHandlersMap.get();
 
         if (!map.containsKey(event.getClass()))
             throw new UnsupportedEventException(event.getClass());
 
-        EventHandlerProcessor<TEvent> processor = map.get(event.getClass());
+        EventHandlerAggregateExecutor<TEvent> processor = map.get(event.getClass());
 
         processor.handle(event);
+    }
+
+    @Override
+    public <Response> Response send(Request<Response> request) {
+        return null;
     }
 
     /**
      * @param factory
      * @return
      */
-    private ConcurrentMap<Class<?>, EventHandlerProcessor> getEventHandlersMap(ListableBeanFactory factory) {
+    private ConcurrentMap<Class<?>, EventHandlerAggregateExecutor> getEventHandlersMap(ListableBeanFactory factory) {
 
-        Map<Class<?>, EventHandlerProcessor> handlersMap = factory
+        Map<Class<?>, EventHandlerAggregateExecutor> handlersMap = factory
                 .getBeansOfType(EventHandler.class)
                 .values()
                 .stream()
@@ -67,7 +70,7 @@ public class Mediator implements Publisher {
                 .stream()
                 .collect(Collectors.toMap(
                         Map.Entry::getKey,
-                        entry -> new EventHandlerProcessor(entry.getValue())));
+                        entry -> new EventHandlerAggregateExecutor(entry.getValue())));
 
         return new ConcurrentHashMap<>(handlersMap);
     }
@@ -89,5 +92,4 @@ public class Mediator implements Publisher {
 
          return (Class<?>) arguments[0];
     }
-
 }
