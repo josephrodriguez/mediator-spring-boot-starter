@@ -1,7 +1,7 @@
 name: Maven Central Package
-on:
-  release:
-    types: [created]
+on: 
+  push:
+    tags: [ 'v*' ]
 jobs:
   build:    
     runs-on: ubuntu-latest
