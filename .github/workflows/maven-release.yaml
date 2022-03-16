@@ -1,0 +1,37 @@
+name: Maven Central Package
+on:
+  release:
+    types: [created]
+jobs:
+  build:    
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup job variables
+        id: vars    
+        run: |
+          echo "::set-output name=tag::${GITHUB_REF#refs/tags/v}"
+
+      - name: Set up Java for publishing to Maven Central Repository
+        uses: actions/setup-java@v2
+        with:
+          java-version: '8'
+          distribution: 'temurin'
+          server-id: ossrh
+          server-username: OSSRH_USERNAME
+          server-password: OSSRH_TOKEN
+          gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
+          gpg-passphrase: GPG_PASSPHRASE
+
+      - name: Build with Maven
+        run: mvn --batch-mode package --file pom.xml "-Dartifact.version=${{ steps.vars.outputs.tag }}"
+
+      - name: Publish to Maven Central Repository
+        if: ${{ github.event.base_ref == 'refs/heads/main' }}
+        run: mvn --batch-mode deploy -P release "-Dartifact.version=${{ steps.vars.outputs.tag }}"
+        env:
+          OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+          OSSRH_TOKEN: ${{ secrets.OSSRH_TOKEN }}
+          GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
