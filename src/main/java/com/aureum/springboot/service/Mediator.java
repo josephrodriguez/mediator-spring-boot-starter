@@ -15,6 +15,7 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.stream.Collectors;
 
 import static com.aureum.springboot.core.BooleanExtensions.not;
+import static com.aureum.springboot.core.Lazy.of;
 
 /**
  *
@@ -32,16 +33,17 @@ public class Mediator implements Publisher, Sender {
     private final Lazy<ConcurrentMap<Class<?>, RequestHandler>> requestHandlersMap;
 
     /**
-     * @param factory
+     * @param factory Instance of {@link ListableBeanFactory} to list the EventHandler and RequestHandler beans
      */
     public Mediator(ListableBeanFactory factory) {
-        this.eventHandlersMap = new Lazy<>(() -> getEventHandlersMap(factory));
-        this.requestHandlersMap = new Lazy<>(() -> getRequestHandlers(factory));
+        this.eventHandlersMap = Lazy.of(() -> getEventHandlersMap(factory));
+        this.requestHandlersMap = Lazy.of(() -> getRequestHandlers(factory));
     }
 
     /**
-     * @param event
-     * @param <TEvent>
+     * @param event The event to handle
+     * @param <TEvent> Type of class which implements Event marker interface
+     * @throws UnsupportedEventException When there is not registered {@code EventHandler<TEvent>} to handle the event type
      */
     @Override
     public <TEvent extends Event> void publish(TEvent event) throws UnsupportedEventException {
@@ -67,10 +69,10 @@ public class Mediator implements Publisher, Sender {
     }
 
     /**
-     * @param request
-     * @param <Response>
-     * @return
-     * @throws UnsupportedRequestException
+     * @param request Request to be handled
+     * @param <Response> Type of the response
+     * @return The result of routing the request to the corresponding {@code RequestHandler<Request, Response>} instance
+     * @throws UnsupportedRequestException When there is no registered bean that implements {@code RequestHandler<Request, Response>} interface
      */
     @Override
     public <Response> Response send(Request<Response> request) throws UnsupportedRequestException {
