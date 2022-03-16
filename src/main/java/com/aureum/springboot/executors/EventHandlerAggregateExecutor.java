@@ -7,24 +7,24 @@ import java.util.Collection;
 import java.util.Collections;
 
 /**
- * @param <TEvent>
+ * @param <TEvent> Type of event for the handlers aggregate
  */
 public class EventHandlerAggregateExecutor<TEvent extends Event> {
 
     /**
-     *
+     * Collection of event handlers
      */
     private final Collection<EventHandler<TEvent>> handlers;
 
     /**
-     * @param handlers
+     * @param handlers Collection of handlers for generic Event
      */
     public EventHandlerAggregateExecutor(Collection<EventHandler<TEvent>> handlers) {
         this.handlers = Collections.synchronizedCollection(handlers);
     }
 
     /**
-     * @param event
+     * @param event The event that will be handled for the EventHandler collection
      */
     public void handle(TEvent event) {
 

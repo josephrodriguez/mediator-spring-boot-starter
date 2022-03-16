@@ -7,14 +7,14 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
- *
+ * Autoconfiguration that expose the conditional @Bean for Mediator service
  */
 @Configuration
 public class SpringBootMediatorAutoConfiguration {
 
     /**
-     * @param factory
-     * @return
+     * @param factory Instance of bean factory to list the bean instances
+     * @return Return the Mediator service instance
      */
     @Bean
     @ConditionalOnMissingBean
