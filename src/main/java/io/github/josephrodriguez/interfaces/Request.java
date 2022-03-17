@@ -1,8 +1,8 @@
-package com.aureum.springboot.interfaces;
+package io.github.josephrodriguez.interfaces;
 
 /**
  * Marker interface to define a request which processing return a response
- * @param <Response> The type of response
+ * @param <T> The type of response
  */
-public interface Request<Response> {
+public interface Request<T> {
 }

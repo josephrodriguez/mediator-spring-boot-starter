@@ -1,7 +1,7 @@
-package com.aureum.springboot.executors;
+package io.github.josephrodriguez.executors;
 
-import com.aureum.springboot.interfaces.Event;
-import com.aureum.springboot.interfaces.EventHandler;
+import io.github.josephrodriguez.interfaces.Event;
+import io.github.josephrodriguez.interfaces.EventHandler;
 
 import java.util.Collection;
 import java.util.Collections;

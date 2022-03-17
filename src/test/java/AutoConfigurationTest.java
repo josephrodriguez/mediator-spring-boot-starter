@@ -1,5 +1,5 @@
-import com.aureum.springboot.config.SpringBootMediatorAutoConfiguration;
-import com.aureum.springboot.service.Mediator;
+import io.github.josephrodriguez.config.SpringBootMediatorAutoConfiguration;
+import io.github.josephrodriguez.service.Mediator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;

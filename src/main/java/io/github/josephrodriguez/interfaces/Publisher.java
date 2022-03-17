@@ -1,6 +1,6 @@
-package com.aureum.springboot.interfaces;
+package io.github.josephrodriguez.interfaces;
 
-import com.aureum.springboot.exceptions.UnsupportedEventException;
+import io.github.josephrodriguez.exceptions.UnsupportedEventException;
 
 /**
  * Class to broadcast an Event for every registered EventHandler instance
@@ -9,8 +9,8 @@ public interface Publisher {
 
     /**
      * @param event The event to handle
-     * @param <TEvent> The type of the Event
+     * @param <T> The type of the Event
      * @throws UnsupportedEventException When there is not registered beans of type {@code EventHandler<TEvent>}
      */
-    <TEvent extends Event> void publish(TEvent event) throws UnsupportedEventException;
+    <T extends Event> void publish(T event) throws UnsupportedEventException;
 }

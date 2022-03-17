@@ -1,12 +1,12 @@
-package com.aureum.springboot.interfaces;
+package io.github.josephrodriguez.interfaces;
 
 /**
- * @param <TEvent> The type of Event handled by this class
+ * @param <<T> The type of Event handled by this class
  */
-public interface EventHandler<TEvent extends Event> {
+public interface EventHandler<T extends Event> {
 
     /**
      * @param event The event instance
      */
-    void handle(TEvent event);
+    void handle(T event);
 }

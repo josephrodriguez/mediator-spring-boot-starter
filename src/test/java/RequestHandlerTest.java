@@ -1,6 +1,6 @@
-import com.aureum.springboot.config.SpringBootMediatorAutoConfiguration;
-import com.aureum.springboot.exceptions.UnsupportedRequestException;
-import com.aureum.springboot.service.Mediator;
+import io.github.josephrodriguez.config.SpringBootMediatorAutoConfiguration;
+import io.github.josephrodriguez.exceptions.UnsupportedRequestException;
+import io.github.josephrodriguez.service.Mediator;
 import handlers.EchoRequestHandler;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

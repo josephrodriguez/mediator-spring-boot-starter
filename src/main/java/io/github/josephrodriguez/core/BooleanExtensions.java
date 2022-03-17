@@ -1,4 +1,4 @@
-package com.aureum.springboot.core;
+package io.github.josephrodriguez.core;
 
 /**
  * Function to extend the use of @boolean

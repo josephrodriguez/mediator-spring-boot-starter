@@ -1,15 +1,15 @@
-package com.aureum.springboot.interfaces;
+package io.github.josephrodriguez.interfaces;
 
 /**
  * Handle a incoming request and returns a response
- * @param <TRequest> The type of request that handle
- * @param <TResponse> The type of the response that return
+ * @param <T> The type of request that handle
+ * @param <V> The type of the response that return
  */
-public interface RequestHandler<TRequest extends Request<TResponse>, TResponse> {
+public interface RequestHandler<T extends Request<V>, V> {
 
     /**
      * @param request The request to be handled
      * @return The result of process the request
      */
-    TResponse handle(TRequest request);
+    V handle(T request);
 }

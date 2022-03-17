@@ -1,7 +1,7 @@
 package handlers;
 
 import events.DateTimeEvent;
-import com.aureum.springboot.interfaces.EventHandler;
+import io.github.josephrodriguez.interfaces.EventHandler;
 
 public class DateTimeEventHandler2 implements EventHandler<DateTimeEvent> {
 
