@@ -1,3 +1,4 @@
+import handlers.DateTimeEventHandler1;
 import io.github.josephrodriguez.config.SpringBootMediatorAutoConfiguration;
 import io.github.josephrodriguez.exceptions.UnsupportedRequestException;
 import io.github.josephrodriguez.service.Mediator;
@@ -77,6 +78,17 @@ class RequestHandlerTest {
                     String message = UUID.randomUUID().toString();
                     EchoResponse response = context.getBean(Mediator.class).send(new EchoRequest(message));
                     assertEquals(response.getMessage(), message);
+                });
+    }
+
+    @Test
+    void shouldThrowIllegalArgumentException() {
+        final ApplicationContextRunner contextRunner = new ApplicationContextRunner();
+
+        contextRunner.withUserConfiguration(SpringBootMediatorAutoConfiguration.class)
+                .withBean(EchoRequestHandler.class)
+                .run( context -> {
+                    assertThrows(IllegalArgumentException.class, () -> context.getBean(Mediator.class).send(null));
                 });
     }
 }
