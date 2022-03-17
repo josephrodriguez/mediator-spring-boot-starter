@@ -1,13 +1,11 @@
-import handlers.DateTimeEventHandler1;
+import handlers.EchoRequestHandler;
 import io.github.josephrodriguez.config.SpringBootMediatorAutoConfiguration;
 import io.github.josephrodriguez.exceptions.UnsupportedRequestException;
 import io.github.josephrodriguez.service.Mediator;
-import handlers.EchoRequestHandler;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.util.Assert;
 import requests.EchoRequest;
 import responses.EchoResponse;
 
@@ -63,7 +61,7 @@ class RequestHandlerTest {
                 .withBean(EchoRequestHandler.class)
                 .run(context -> {
                     EchoResponse response = context.getBean(Mediator.class).send(new EchoRequest("Hi"));
-                    assertEquals(response.getMessage(), "Hi");
+                    assertEquals("Hi", response.getMessage());
                 });
     }
 
@@ -88,7 +86,8 @@ class RequestHandlerTest {
         contextRunner.withUserConfiguration(SpringBootMediatorAutoConfiguration.class)
                 .withBean(EchoRequestHandler.class)
                 .run( context -> {
-                    assertThrows(IllegalArgumentException.class, () -> context.getBean(Mediator.class).send(null));
+                    Mediator mediator = context.getBean(Mediator.class);
+                    assertThrows(IllegalArgumentException.class, () -> mediator.send(null));
                 });
     }
 }

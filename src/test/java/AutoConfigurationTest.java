@@ -5,8 +5,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import javax.print.attribute.standard.Media;
-
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @ExtendWith(SpringExtension.class)
