@@ -10,7 +10,7 @@
         <version>2.6.4</version>
     </parent>
 
-    <groupId>com.aureum.springboot</groupId>
+    <groupId>io.github.josephrodriguez</groupId>
     <artifactId>mediator-spring-boot-starter</artifactId>
     <version>${artifact.version}</version>
 
@@ -133,7 +133,7 @@
                     <plugin>
                         <groupId>org.sonatype.plugins</groupId>
                         <artifactId>nexus-staging-maven-plugin</artifactId>
-                        <version>1.6.7</version>
+                        <version>1.6.12</version>
                         <extensions>true</extensions>
                         <configuration>
                             <serverId>ossrh</serverId>
