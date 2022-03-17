@@ -13,7 +13,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ExtendWith(SpringExtension.class)
-public class EventHandlerTest {
+class EventHandlerTest {
 
     @Test
     void executeUnsupportedEventWithBean() {

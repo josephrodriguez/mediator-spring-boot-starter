@@ -15,7 +15,7 @@ import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ExtendWith(SpringExtension.class)
-public class RequestHandlerTest {
+class RequestHandlerTest {
 
     @Test
     void shouldThrowUnsupportedRequest() {

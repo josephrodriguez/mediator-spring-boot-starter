@@ -7,7 +7,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.util.Assert;
 
 @ExtendWith(SpringExtension.class)
-public class AutoConfigurationTest {
+class AutoConfigurationTest {
 
     @Test
     void executeApplicationContext() {
