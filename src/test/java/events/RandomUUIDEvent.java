@@ -1,6 +1,6 @@
 package events;
 
-import com.aureum.springboot.interfaces.Event;
+import io.github.josephrodriguez.interfaces.Event;
 
 import java.util.UUID;
 

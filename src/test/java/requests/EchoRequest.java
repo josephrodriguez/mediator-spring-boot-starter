@@ -1,6 +1,6 @@
 package requests;
 
-import com.aureum.springboot.interfaces.Request;
+import io.github.josephrodriguez.interfaces.Request;
 import responses.EchoResponse;
 
 public class EchoRequest implements Request<EchoResponse> {

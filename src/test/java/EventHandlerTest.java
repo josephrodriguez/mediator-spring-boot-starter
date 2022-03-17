@@ -2,9 +2,9 @@ import events.DateTimeEvent;
 import events.RandomUUIDEvent;
 import handlers.DateTimeEventHandler1;
 import handlers.RandomUUIDEventHandler;
-import com.aureum.springboot.config.SpringBootMediatorAutoConfiguration;
-import com.aureum.springboot.exceptions.UnsupportedEventException;
-import com.aureum.springboot.service.Mediator;
+import io.github.josephrodriguez.config.SpringBootMediatorAutoConfiguration;
+import io.github.josephrodriguez.exceptions.UnsupportedEventException;
+import io.github.josephrodriguez.service.Mediator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
@@ -13,7 +13,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ExtendWith(SpringExtension.class)
-public class EventHandlerTest {
+class EventHandlerTest {
 
     @Test
     void executeUnsupportedEventWithBean() {

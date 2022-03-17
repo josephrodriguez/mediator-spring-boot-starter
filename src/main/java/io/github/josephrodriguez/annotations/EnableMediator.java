@@ -1,6 +1,6 @@
-package com.aureum.springboot.annotations;
+package io.github.josephrodriguez.annotations;
 
-import com.aureum.springboot.config.SpringBootMediatorAutoConfiguration;
+import io.github.josephrodriguez.config.SpringBootMediatorAutoConfiguration;
 import org.springframework.context.annotation.Import;
 
 import java.lang.annotation.*;
