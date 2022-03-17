@@ -5,15 +5,12 @@ package io.github.josephrodriguez.core;
  */
 public class BooleanExtensions {
 
-    /**
-     * Hide the implicit public constructor
-     */
     private BooleanExtensions(){
     }
 
     /**
      * @param value Input value
-     * @return The negation (!) of the parameter
+     * @return The boolean negation (!) of the parameter
      */
     public static boolean not(boolean value) {
         return !value;

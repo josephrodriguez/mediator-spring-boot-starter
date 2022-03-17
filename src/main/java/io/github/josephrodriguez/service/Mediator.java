@@ -96,10 +96,6 @@ public class Mediator implements Publisher, Sender {
         return handler.handle(request);
     }
 
-    /**
-     * @param factory
-     * @return
-     */
     private ConcurrentMap<Class<?>, EventHandlerAggregateExecutor> getEventHandlersMap(ListableBeanFactory factory) {
 
         Map<Class<?>, EventHandlerAggregateExecutor> handlersMap = factory
@@ -116,10 +112,6 @@ public class Mediator implements Publisher, Sender {
         return new ConcurrentHashMap<>(handlersMap);
     }
 
-    /**
-     * @param factory
-     * @return
-     */
     private ConcurrentMap<Class<?>, RequestHandler> getRequestHandlers(ListableBeanFactory factory) {
 
         Map<Class<?>, RequestHandler> map = factory

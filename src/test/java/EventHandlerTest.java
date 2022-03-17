@@ -60,4 +60,15 @@ class EventHandlerTest {
                     context.getBean(Mediator.class).publish(new RandomUUIDEvent());
                 });
     }
+
+    @Test
+    void shouldThrowIllegalArgumentException() {
+        final ApplicationContextRunner contextRunner = new ApplicationContextRunner();
+
+        contextRunner.withUserConfiguration(SpringBootMediatorAutoConfiguration.class)
+                .withBean(DateTimeEventHandler1.class)
+                .run( context -> {
+                   assertThrows(IllegalArgumentException.class, () -> context.getBean(Mediator.class).publish(null));
+                });
+    }
 }
