@@ -68,7 +68,8 @@ class EventHandlerTest {
         contextRunner.withUserConfiguration(SpringBootMediatorAutoConfiguration.class)
                 .withBean(DateTimeEventHandler1.class)
                 .run( context -> {
-                   assertThrows(IllegalArgumentException.class, () -> context.getBean(Mediator.class).publish(null));
+                    Mediator mediator = context.getBean(Mediator.class);
+                   assertThrows(IllegalArgumentException.class, () -> mediator.publish(null));
                 });
     }
 }

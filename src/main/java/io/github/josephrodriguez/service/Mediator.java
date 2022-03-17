@@ -1,15 +1,17 @@
 package io.github.josephrodriguez.service;
 
-import io.github.josephrodriguez.exceptions.UnsupportedRequestException;
 import io.github.josephrodriguez.core.Lazy;
 import io.github.josephrodriguez.exceptions.UnsupportedEventException;
+import io.github.josephrodriguez.exceptions.UnsupportedRequestException;
 import io.github.josephrodriguez.executors.EventHandlerAggregateExecutor;
 import io.github.josephrodriguez.interfaces.*;
 import org.springframework.beans.factory.ListableBeanFactory;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.stream.Collectors;

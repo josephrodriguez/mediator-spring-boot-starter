@@ -21,9 +21,9 @@ The library version dependency should be declared on pom.xml file.
 
 ```xml
 <dependency>
-  <groupId>com.aureum.springboot</groupId>
+  <groupId>io.github.josephrodriguez</groupId>
   <artifactId>mediator-spring-boot-starter</artifactId>
-  <version>0.0.1</version>
+  <version>1.0.1</version>
 </dependency>
 ```
 
@@ -40,7 +40,7 @@ $ mvn install
 Auto-configuration feature is supported by the library using the annotation `@EnableMediator` annotation in the Spring Boot Application.
 
 ```java
-import com.aureum.springboot.annotations.EnableMediator;
+import io.github.josephrodriguez.annotations.EnableMediator;
 
 @EnableMediator
 @SpringBootApplication
@@ -51,10 +51,27 @@ public class SpringBootStarterKitApplication {
 }
 ```
 
+Lets define the request and response classes:
+
+_EchoRequest.java_
+```java
+@AllArgsConstructor
+public class EchoRequest implements Request<EchoResponse> {
+    private final String message;
+}
+```
+_EchoResponse.java_
+```java
+@Data
+@AllArgsConstructor
+public class EchoResponse {
+    private final String message;
+}
+```
 Declare the classes that implements `EventHandler` or `RequestHandler` interfaces to handle the events or request instances. 
 
 ```java
-import com.aureum.springboot.interfaces.RequestHandler;
+import io.github.josephrodriguez.interfaces.RequestHandler;
 
 @Service
 public class EchoRequestHandler implements RequestHandler<EchoRequest, EchoResponse> {
@@ -69,21 +86,21 @@ public class EchoRequestHandler implements RequestHandler<EchoRequest, EchoRespo
 Use the Mediator service with dependency injection.
 
 ```java
-import com.aureum.springboot.service.Mediator;
+import io.github.josephrodriguez.service.Mediator;
 
 @RestController
 public class EchoController {
 
     private Mediator mediator;
-    
+
     public EchoController(Mediator mediator) {
         this.mediator = mediator;
     }
 
     @RequestMapping("/echo")
-    public ResponseEntity<EchoResponse> echo() {
-        
-        EchoRequest request = new EchoRequest("echo");
+    public ResponseEntity<EchoResponse> echo() throws UnsupportedRequestException {
+
+        EchoRequest request = new EchoRequest(UUID.randomUUID().toString());
         EchoResponse response = mediator.send(request);
 
         return ResponseEntity
