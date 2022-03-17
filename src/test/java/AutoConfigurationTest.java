@@ -4,7 +4,10 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.util.Assert;
+
+import javax.print.attribute.standard.Media;
+
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @ExtendWith(SpringExtension.class)
 class AutoConfigurationTest {
@@ -15,7 +18,7 @@ class AutoConfigurationTest {
 
         contextRunner.withUserConfiguration(SpringBootMediatorAutoConfiguration.class)
                         .run(context -> {
-                            Assert.notNull(context, "ApplicationContext should not be null.");
+                            assertNotNull(context);
                         });
     }
 
@@ -26,7 +29,7 @@ class AutoConfigurationTest {
 
         contextRunner.withUserConfiguration(SpringBootMediatorAutoConfiguration.class)
                 .run(context -> {
-                    Assert.notNull(context.getBean(Mediator.class), "Mediator bean can´t be null.");
+                    assertNotNull(context.getBean(Mediator.class));
                 });
     }
 }

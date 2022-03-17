@@ -12,7 +12,7 @@ import responses.EchoResponse;
 
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(SpringExtension.class)
 class RequestHandlerTest {
@@ -36,8 +36,7 @@ class RequestHandlerTest {
         contextRunner.withUserConfiguration(SpringBootMediatorAutoConfiguration.class)
                 .withBean(EchoRequestHandler.class)
                 .run(context -> {
-                    EchoResponse response = context.getBean(Mediator.class).send(new EchoRequest("Hi"));
-                    Assert.notNull(response, "Response instance can not be null.");
+                    assertNotNull(context.getBean(Mediator.class).send(new EchoRequest("Hi")));
                 });
     }
 
@@ -50,7 +49,7 @@ class RequestHandlerTest {
                 .withBean(EchoRequestHandler.class)
                 .run(context -> {
                     EchoResponse response = context.getBean(Mediator.class).send(new EchoRequest("Hi"));
-                    Assert.isTrue(response.getClass().equals(EchoResponse.class), "EchoResponse class does not match.");
+                    assertEquals(response.getClass(), EchoResponse.class);
                 });
     }
 
@@ -63,7 +62,7 @@ class RequestHandlerTest {
                 .withBean(EchoRequestHandler.class)
                 .run(context -> {
                     EchoResponse response = context.getBean(Mediator.class).send(new EchoRequest("Hi"));
-                    Assert.isTrue(response.getMessage().equals("Hi"), "EchoResponse message does not match.");
+                    assertEquals(response.getMessage(), "Hi");
                 });
     }
 
@@ -77,7 +76,7 @@ class RequestHandlerTest {
                 .run(context -> {
                     String message = UUID.randomUUID().toString();
                     EchoResponse response = context.getBean(Mediator.class).send(new EchoRequest(message));
-                    Assert.isTrue(response.getMessage().equals(message), "EchoResponse message does not match.");
+                    assertEquals(response.getMessage(), message);
                 });
     }
 }

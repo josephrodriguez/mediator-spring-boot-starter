@@ -6,6 +6,12 @@ package io.github.josephrodriguez.core;
 public class BooleanExtensions {
 
     /**
+     * Hide the implicit public constructor
+     */
+    private BooleanExtensions(){
+    }
+
+    /**
      * @param value Input value
      * @return The negation (!) of the parameter
      */
