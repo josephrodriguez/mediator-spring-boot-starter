@@ -1,6 +1,6 @@
-package com.aureum.springboot.exceptions;
+package io.github.josephrodriguez.exceptions;
 
-import com.aureum.springboot.interfaces.Request;
+import io.github.josephrodriguez.interfaces.Request;
 
 /**
  *

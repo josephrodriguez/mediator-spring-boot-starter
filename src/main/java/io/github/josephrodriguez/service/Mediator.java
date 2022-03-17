@@ -1,21 +1,22 @@
-package com.aureum.springboot.service;
+package io.github.josephrodriguez.service;
 
-import com.aureum.springboot.exceptions.UnsupportedRequestException;
-import com.aureum.springboot.interfaces.*;
-import com.aureum.springboot.core.Lazy;
-import com.aureum.springboot.exceptions.UnsupportedEventException;
-import com.aureum.springboot.executors.EventHandlerAggregateExecutor;
+import io.github.josephrodriguez.core.Lazy;
+import io.github.josephrodriguez.exceptions.UnsupportedEventException;
+import io.github.josephrodriguez.exceptions.UnsupportedRequestException;
+import io.github.josephrodriguez.executors.EventHandlerAggregateExecutor;
+import io.github.josephrodriguez.interfaces.*;
 import org.springframework.beans.factory.ListableBeanFactory;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.stream.Collectors;
 
-import static com.aureum.springboot.core.BooleanExtensions.not;
-import static com.aureum.springboot.core.Lazy.of;
+import static io.github.josephrodriguez.core.BooleanExtensions.not;
 
 /**
  *
@@ -42,11 +43,11 @@ public class Mediator implements Publisher, Sender {
 
     /**
      * @param event The event to handle
-     * @param <TEvent> Type of class which implements Event marker interface
+     * @param <T> Type of class which implements Event marker interface
      * @throws UnsupportedEventException When there is not registered {@code EventHandler<TEvent>} to handle the event type
      */
     @Override
-    public <TEvent extends Event> void publish(TEvent event) throws UnsupportedEventException {
+    public <T extends Event> void publish(T event) throws UnsupportedEventException {
 
         if (event == null)
             throw new IllegalArgumentException("Undefined event argument.");
@@ -70,12 +71,12 @@ public class Mediator implements Publisher, Sender {
 
     /**
      * @param request Request to be handled
-     * @param <Response> Type of the response
+     * @param <T> Type of the response
      * @return The result of routing the request to the corresponding {@code RequestHandler<Request, Response>} instance
      * @throws UnsupportedRequestException When there is no registered bean that implements {@code RequestHandler<Request, Response>} interface
      */
     @Override
-    public <Response> Response send(Request<Response> request) throws UnsupportedRequestException {
+    public <T> T send(Request<T> request) throws UnsupportedRequestException {
 
         if (request == null)
             throw new IllegalArgumentException("Undefined request argument");
@@ -90,19 +91,13 @@ public class Mediator implements Publisher, Sender {
         if (unsupportedRequest)
             throw new UnsupportedRequestException(requestClazz);
 
-        RequestHandler<Request<Response>, Response> handler = requestHandlersMap
+        RequestHandler<Request<T>, T> handler = requestHandlersMap
                 .get()
                 .get(requestClazz);
 
-        Response response = handler.handle(request);
-
-        return response;
+        return handler.handle(request);
     }
 
-    /**
-     * @param factory
-     * @return
-     */
     private ConcurrentMap<Class<?>, EventHandlerAggregateExecutor> getEventHandlersMap(ListableBeanFactory factory) {
 
         Map<Class<?>, EventHandlerAggregateExecutor> handlersMap = factory
@@ -119,10 +114,6 @@ public class Mediator implements Publisher, Sender {
         return new ConcurrentHashMap<>(handlersMap);
     }
 
-    /**
-     * @param factory
-     * @return
-     */
     private ConcurrentMap<Class<?>, RequestHandler> getRequestHandlers(ListableBeanFactory factory) {
 
         Map<Class<?>, RequestHandler> map = factory
@@ -177,13 +168,11 @@ public class Mediator implements Publisher, Sender {
      * @return
      */
     private Optional<ParameterizedType> getGenericInterfaceParameterizedType(Class<?> objectClazz, Class<?> interfaceClazz) {
-
-        Optional<ParameterizedType> interfaceParameterizedType = Arrays.stream(objectClazz.getGenericInterfaces())
-                .filter(type -> type instanceof ParameterizedType)
-                .map(type -> (ParameterizedType) type)
-                .filter(type -> type.getRawType().equals(interfaceClazz))
-                .findFirst();
-
-        return interfaceParameterizedType;
+        return
+                Arrays.stream(objectClazz.getGenericInterfaces())
+                        .filter(ParameterizedType.class::isInstance)
+                        .map(ParameterizedType.class::cast)
+                        .filter(type -> type.getRawType().equals(interfaceClazz))
+                        .findFirst();
     }
 }

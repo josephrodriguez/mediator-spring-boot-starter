@@ -1,11 +1,9 @@
 ### Release notes
 
-:rocket: New Features:
-+ Support synchronous event handlers [#13](https://github.com/josephrodriguez/mediator-spring-boot-starter/issues/13)
-+ Support synchronous request handlers [#14](https://github.com/josephrodriguez/mediator-spring-boot-starter/issues/14)
+:wrench: Bug fixes:
++ Sonarcloud issue: Use a thread-safe type; adding "volatile" is not enough to make this field thread-safe [#31](https://github.com/josephrodriguez/mediator-spring-boot-starter/issues/31)
 
 :star2: Improvements: 
-+ Lazy search for handler @Bean using `ListableBeanFactory` instance
-+ Support JUnit5 unit testing [#7](https://github.com/josephrodriguez/mediator-spring-boot-starter/issues/7)
-+ Sonarcloud integration [#18](https://github.com/josephrodriguez/mediator-spring-boot-starter/issues/18)
-+ Codecov integration
++ Bump spring-context-support from 5.3.16 to 5.3.17 [#23](https://github.com/josephrodriguez/mediator-spring-boot-starter/issues/23)
++ Sonarcloud: Replace this lambda with method reference 'ParameterizedType.class::isInstance' [#24](https://github.com/josephrodriguez/mediator-spring-boot-starter/issues/24)
++ Sonarcloud issue: Replace this lambda with method reference 'ParameterizedType.class::cast' [#25](https://github.com/josephrodriguez/mediator-spring-boot-starter/issues/25)

@@ -6,6 +6,7 @@
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=josephrodriguez_mediator-spring-boot-starter&metric=alert_status)](https://sonarcloud.io/dashboard?id=josephrodriguez_mediator-spring-boot-starter)
 [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=josephrodriguez_mediator-spring-boot-starter&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=josephrodriguez_mediator-spring-boot-starter)
 [![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=josephrodriguez_mediator-spring-boot-starter&metric=reliability_rating)](https://sonarcloud.io/dashboard?id=josephrodriguez_mediator-spring-boot-starter)
+[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=josephrodriguez_mediator-spring-boot-starter&metric=security_rating)](https://sonarcloud.io/dashboard?id=josephrodriguez_mediator-spring-boot-starter)
 
 ## Main Purpose
 
@@ -21,9 +22,9 @@ The library version dependency should be declared on pom.xml file.
 
 ```xml
 <dependency>
-  <groupId>com.aureum.springboot</groupId>
+  <groupId>io.github.josephrodriguez</groupId>
   <artifactId>mediator-spring-boot-starter</artifactId>
-  <version>0.0.1</version>
+  <version>1.0.1</version>
 </dependency>
 ```
 
@@ -37,10 +38,12 @@ $ mvn install
 
 ## Usage
 
+#### Annotation
+
 Auto-configuration feature is supported by the library using the annotation `@EnableMediator` annotation in the Spring Boot Application.
 
 ```java
-import com.aureum.springboot.annotations.EnableMediator;
+import io.github.josephrodriguez.annotations.EnableMediator;
 
 @EnableMediator
 @SpringBootApplication
@@ -51,10 +54,35 @@ public class SpringBootStarterKitApplication {
 }
 ```
 
-Declare the classes that implements `EventHandler` or `RequestHandler` interfaces to handle the events or request instances. 
+#### Request
 
+Lets define the class that 
+
+_EchoRequest.java_
 ```java
-import com.aureum.springboot.interfaces.RequestHandler;
+@AllArgsConstructor
+public class EchoRequest implements Request<EchoResponse> {
+    private final String message;
+}
+```
+
+#### Response
+
+_EchoResponse.java_
+```java
+@Data
+@AllArgsConstructor
+public class EchoResponse {
+    private final String message;
+}
+```
+
+#### Handler
+Implement the `RequestHandler` interfaces to handle the request object. 
+
+_EchoRequestHandler.java_
+```java
+import io.github.josephrodriguez.interfaces.RequestHandler;
 
 @Service
 public class EchoRequestHandler implements RequestHandler<EchoRequest, EchoResponse> {
@@ -66,24 +94,26 @@ public class EchoRequestHandler implements RequestHandler<EchoRequest, EchoRespo
 }
 ```
 
+#### Mediator in action
+
 Use the Mediator service with dependency injection.
 
 ```java
-import com.aureum.springboot.service.Mediator;
+import io.github.josephrodriguez.service.Mediator;
 
 @RestController
 public class EchoController {
 
     private Mediator mediator;
-    
+
     public EchoController(Mediator mediator) {
         this.mediator = mediator;
     }
 
     @RequestMapping("/echo")
-    public ResponseEntity<EchoResponse> echo() {
-        
-        EchoRequest request = new EchoRequest("echo");
+    public ResponseEntity<EchoResponse> echo() throws UnsupportedRequestException {
+
+        EchoRequest request = new EchoRequest(UUID.randomUUID().toString());
         EchoResponse response = mediator.send(request);
 
         return ResponseEntity

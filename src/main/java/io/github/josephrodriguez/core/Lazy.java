@@ -1,4 +1,4 @@
-package com.aureum.springboot.core;
+package io.github.josephrodriguez.core;
 
 import java.util.function.Supplier;
 
@@ -9,7 +9,7 @@ import java.util.function.Supplier;
 public class Lazy<T> implements Supplier<T> {
 
     private final Supplier<T> supplier;
-    private volatile T value;
+    private T value;
 
     /**
      * @param supplier Supplier that returns an object of type T
@@ -25,12 +25,11 @@ public class Lazy<T> implements Supplier<T> {
     @Override
     public T get() {
 
-        if (value == null) {
-            synchronized (this) {
-                if (value == null) {
-                    value = supplier.get();
-                }
-            }
+        if( value != null) return value;
+        
+        synchronized (this) {
+            if (value == null)
+                value = supplier.get();
         }
 
         return value;

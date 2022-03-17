@@ -1,32 +1,32 @@
-package com.aureum.springboot.executors;
+package io.github.josephrodriguez.executors;
 
-import com.aureum.springboot.interfaces.Event;
-import com.aureum.springboot.interfaces.EventHandler;
+import io.github.josephrodriguez.interfaces.Event;
+import io.github.josephrodriguez.interfaces.EventHandler;
 
 import java.util.Collection;
 import java.util.Collections;
 
 /**
- * @param <TEvent> Type of event for the handlers aggregate
+ * @param <T> Type of event for the handlers aggregate
  */
-public class EventHandlerAggregateExecutor<TEvent extends Event> {
+public class EventHandlerAggregateExecutor<T extends Event> {
 
     /**
      * Collection of event handlers
      */
-    private final Collection<EventHandler<TEvent>> handlers;
+    private final Collection<EventHandler<T>> handlers;
 
     /**
      * @param handlers Collection of handlers for generic Event
      */
-    public EventHandlerAggregateExecutor(Collection<EventHandler<TEvent>> handlers) {
+    public EventHandlerAggregateExecutor(Collection<EventHandler<T>> handlers) {
         this.handlers = Collections.synchronizedCollection(handlers);
     }
 
     /**
      * @param event The event that will be handled for the EventHandler collection
      */
-    public void handle(TEvent event) {
+    public void handle(T event) {
 
         if(event == null)
             throw new IllegalArgumentException("Undefined event instance.");

@@ -1,6 +1,6 @@
 package handlers;
 
-import com.aureum.springboot.interfaces.RequestHandler;
+import io.github.josephrodriguez.interfaces.RequestHandler;
 import requests.EchoRequest;
 import responses.EchoResponse;
 

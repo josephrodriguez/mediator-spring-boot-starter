@@ -1,4 +1,4 @@
-package com.aureum.springboot.interfaces;
+package io.github.josephrodriguez.interfaces;
 
 /**
  * Marker interface
