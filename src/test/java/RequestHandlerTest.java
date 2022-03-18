@@ -10,6 +10,7 @@ import requests.EchoRequest;
 import responses.EchoResponse;
 
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -88,6 +89,23 @@ class RequestHandlerTest {
                 .run( context -> {
                     Mediator mediator = context.getBean(Mediator.class);
                     assertThrows(IllegalArgumentException.class, () -> mediator.send(null));
+                });
+    }
+
+    @Test
+    void shouldHandleAsyncRequest() {
+        final ApplicationContextRunner contextRunner = new ApplicationContextRunner();
+
+        contextRunner.withUserConfiguration(SpringBootMediatorAutoConfiguration.class)
+                .withBean(EchoRequestHandler.class)
+                .run(context -> {
+                   Mediator mediator = context.getBean(Mediator.class);
+                   EchoRequest request = new EchoRequest(UUID.randomUUID().toString());
+                   CompletableFuture<EchoResponse> future = mediator.sendAsync(request);
+                   EchoResponse response = future.join();
+
+                   assertEquals(EchoResponse.class, response.getClass());
+                   assertEquals(request.getMessage(), response.getMessage());
                 });
     }
 }

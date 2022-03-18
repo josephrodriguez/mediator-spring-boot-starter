@@ -12,6 +12,8 @@ import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.stream.Collectors;
@@ -48,7 +50,6 @@ public class Mediator implements Publisher, Sender {
      */
     @Override
     public <T extends Event> void publish(T event) throws UnsupportedEventException {
-
         if (event == null)
             throw new IllegalArgumentException("Undefined event argument.");
 
@@ -69,6 +70,20 @@ public class Mediator implements Publisher, Sender {
         processor.handle(event);
     }
 
+    @Override
+    public <T extends Event> CompletableFuture<Void> publishAsync(T event) {
+        return CompletableFuture.supplyAsync(() -> {
+            try {
+                publish(event);
+            }
+            catch (UnsupportedEventException ex) {
+                throw new CompletionException(ex);
+            }
+
+            return null;
+        });
+    }
+
     /**
      * @param request Request to be handled
      * @param <T> Type of the response
@@ -77,7 +92,6 @@ public class Mediator implements Publisher, Sender {
      */
     @Override
     public <T> T send(Request<T> request) throws UnsupportedRequestException {
-
         if (request == null)
             throw new IllegalArgumentException("Undefined request argument");
 
@@ -96,6 +110,18 @@ public class Mediator implements Publisher, Sender {
                 .get(requestClazz);
 
         return handler.handle(request);
+    }
+
+    @Override
+    public <T> CompletableFuture<T> sendAsync(Request<T> request) {
+        return CompletableFuture.supplyAsync(() -> {
+            try {
+                return send(request);
+            }
+            catch (UnsupportedRequestException ex) {
+                throw new CompletionException(ex);
+            }
+        });
     }
 
     private ConcurrentMap<Class<?>, EventHandlerAggregateExecutor> getEventHandlersMap(ListableBeanFactory factory) {
