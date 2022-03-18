@@ -24,7 +24,7 @@ The library version dependency should be declared on pom.xml file.
 <dependency>
   <groupId>io.github.josephrodriguez</groupId>
   <artifactId>mediator-spring-boot-starter</artifactId>
-  <version>1.0.1</version>
+  <version>1.1.0</version>
 </dependency>
 ```
 
@@ -99,7 +99,7 @@ public class EchoRequestHandler implements RequestHandler<EchoRequest, EchoRespo
 Use the Mediator service with dependency injection.
 
 ```java
-import io.github.josephrodriguez.service.Mediator;
+import io.github.josephrodriguez.Mediator;
 
 @RestController
 public class EchoController {
@@ -121,4 +121,19 @@ public class EchoController {
                 .body(response);
     }
 }
+```
+
+#### Asynchronous support
+
+Asynchronous operations are supported using the `CompletableFuture<?>` class.
+
+```java
+EchoRequest request = new EchoRequest("Hi Mediator");
+CompletableFuture<EchoResponse> future = mediator.sendAsync(request);
+EchoResponse response = response.join();
+```
+
+```java
+DateTimeEvent event = new DateTimeEvent();
+CompletableFuture<Void> future = mediator.publishAsync(event);
 ```
