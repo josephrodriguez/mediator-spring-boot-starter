@@ -18,9 +18,9 @@ public interface Sender {
     <T> T send(Request<T> request) throws UnsupportedRequestException;
 
     /**
-     * @param request
-     * @param <T>
-     * @return
+     * @param request The type of the class that implements Request interface
+     * @param <T> The type of the result
+     * @return A {@code CompletableFuture} object instance for the asynchronous operation
      */
     <T> CompletableFuture<T> sendAsync(Request<T> request);
 }

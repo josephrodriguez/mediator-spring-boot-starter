@@ -70,6 +70,11 @@ public class Mediator implements Publisher, Sender {
         processor.handle(event);
     }
 
+    /**
+     * @param event The {@code Event} instance to be handled in asynchronous way for the corresponding {@code EventHandler}
+     * @param <T> Type of {@code Event} to be handled
+     * @return A {@code CompletableFuture} object instance for the asynchronous operation
+     */
     @Override
     public <T extends Event> CompletableFuture<Void> publishAsync(T event) {
         return CompletableFuture.supplyAsync(() -> {
@@ -112,6 +117,11 @@ public class Mediator implements Publisher, Sender {
         return handler.handle(request);
     }
 
+    /**
+     * @param request The type of the class that implements Request interface
+     * @param <T> The type of Request
+     * @return A {@code CompletableFuture} object instance for the asynchronous operation
+     */
     @Override
     public <T> CompletableFuture<T> sendAsync(Request<T> request) {
         return CompletableFuture.supplyAsync(() -> {
