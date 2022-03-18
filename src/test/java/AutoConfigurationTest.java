@@ -1,5 +1,5 @@
+import io.github.josephrodriguez.Mediator;
 import io.github.josephrodriguez.config.SpringBootMediatorAutoConfiguration;
-import io.github.josephrodriguez.service.Mediator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;

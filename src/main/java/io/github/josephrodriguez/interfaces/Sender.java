@@ -2,6 +2,8 @@ package io.github.josephrodriguez.interfaces;
 
 import io.github.josephrodriguez.exceptions.UnsupportedRequestException;
 
+import java.util.concurrent.CompletableFuture;
+
 /**
  * Route
  */
@@ -14,4 +16,11 @@ public interface Sender {
      * @throws UnsupportedRequestException When there is no registered bean instance of type {@code RequestHandler<Request, Response>}
      */
     <T> T send(Request<T> request) throws UnsupportedRequestException;
+
+    /**
+     * @param request The type of the class that implements Request interface
+     * @param <T> The type of the result
+     * @return A {@code CompletableFuture} object instance for the asynchronous operation
+     */
+    <T> CompletableFuture<T> sendAsync(Request<T> request);
 }
