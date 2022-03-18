@@ -1,6 +1,6 @@
 package io.github.josephrodriguez.config;
 
-import io.github.josephrodriguez.service.Mediator;
+import io.github.josephrodriguez.Mediator;
 import org.springframework.beans.factory.ListableBeanFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;

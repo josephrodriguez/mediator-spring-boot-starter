@@ -4,13 +4,16 @@ import handlers.DateTimeEventHandler1;
 import handlers.RandomUUIDEventHandler;
 import io.github.josephrodriguez.config.SpringBootMediatorAutoConfiguration;
 import io.github.josephrodriguez.exceptions.UnsupportedEventException;
-import io.github.josephrodriguez.service.Mediator;
+import io.github.josephrodriguez.Mediator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(SpringExtension.class)
 class EventHandlerTest {
@@ -69,7 +72,50 @@ class EventHandlerTest {
                 .withBean(DateTimeEventHandler1.class)
                 .run( context -> {
                     Mediator mediator = context.getBean(Mediator.class);
-                   assertThrows(IllegalArgumentException.class, () -> mediator.publish(null));
+                    assertThrows(IllegalArgumentException.class, () -> mediator.publish(null));
                 });
+    }
+
+    @Test
+    void shouldThrowCompletionException() {
+        final ApplicationContextRunner contextRunner = new ApplicationContextRunner();
+
+        contextRunner.withUserConfiguration(SpringBootMediatorAutoConfiguration.class)
+                .withBean(DateTimeEventHandler1.class)
+                .run( context -> {
+                    Mediator mediator = context.getBean(Mediator.class);
+                    CompletableFuture<Void> future = mediator.publishAsync(null);
+                    assertThrows(CompletionException.class, () -> future.join());
+                });
+
+    }
+
+    @Test
+    void shouldThrowCompletionExceptionForMissingHandler() {
+        final ApplicationContextRunner contextRunner = new ApplicationContextRunner();
+
+        contextRunner.withUserConfiguration(SpringBootMediatorAutoConfiguration.class)
+                .run( context -> {
+                    Mediator mediator = context.getBean(Mediator.class);
+                    CompletableFuture<Void> future = mediator.publishAsync(new DateTimeEvent());
+                    assertThrows(CompletionException.class, () -> future.join());
+                });
+
+    }
+
+    @Test
+    void shouldHandleEventAsync() {
+        final ApplicationContextRunner contextRunner = new ApplicationContextRunner();
+
+        contextRunner.withUserConfiguration(SpringBootMediatorAutoConfiguration.class)
+                .withBean(DateTimeEventHandler1.class)
+                .run( context -> {
+                    Mediator mediator = context.getBean(Mediator.class);
+                    CompletableFuture<Void> future = mediator.publishAsync(new DateTimeEvent());
+
+                    assertNull(future.join());
+                    assertTrue(future.isDone());
+                });
+
     }
 }

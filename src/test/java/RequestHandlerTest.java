@@ -1,7 +1,7 @@
 import handlers.EchoRequestHandler;
 import io.github.josephrodriguez.config.SpringBootMediatorAutoConfiguration;
 import io.github.josephrodriguez.exceptions.UnsupportedRequestException;
-import io.github.josephrodriguez.service.Mediator;
+import io.github.josephrodriguez.Mediator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
@@ -10,6 +10,8 @@ import requests.EchoRequest;
 import responses.EchoResponse;
 
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -88,6 +90,37 @@ class RequestHandlerTest {
                 .run( context -> {
                     Mediator mediator = context.getBean(Mediator.class);
                     assertThrows(IllegalArgumentException.class, () -> mediator.send(null));
+                });
+    }
+
+    @Test
+    void shouldHandleAsyncRequest() {
+        final ApplicationContextRunner contextRunner = new ApplicationContextRunner();
+
+        contextRunner.withUserConfiguration(SpringBootMediatorAutoConfiguration.class)
+                .withBean(EchoRequestHandler.class)
+                .run(context -> {
+                   Mediator mediator = context.getBean(Mediator.class);
+                   EchoRequest request = new EchoRequest(UUID.randomUUID().toString());
+                   CompletableFuture<EchoResponse> future = mediator.sendAsync(request);
+                   EchoResponse response = future.join();
+
+                   assertEquals(EchoResponse.class, response.getClass());
+                   assertEquals(request.getMessage(), response.getMessage());
+                });
+    }
+
+    @Test
+    void shouldThrowCompletionException() {
+        final ApplicationContextRunner contextRunner = new ApplicationContextRunner();
+
+        contextRunner.withUserConfiguration(SpringBootMediatorAutoConfiguration.class)
+                .run( context -> {
+                    Mediator mediator = context.getBean(Mediator.class);
+                    EchoRequest request = new EchoRequest("Hi Mediator");
+                    CompletableFuture<EchoResponse> response = mediator.sendAsync(request);
+
+                    assertThrows(CompletionException.class, () -> response.join());
                 });
     }
 }
