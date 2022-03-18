@@ -1,7 +1,7 @@
 import handlers.EchoRequestHandler;
 import io.github.josephrodriguez.config.SpringBootMediatorAutoConfiguration;
 import io.github.josephrodriguez.exceptions.UnsupportedRequestException;
-import io.github.josephrodriguez.service.Mediator;
+import io.github.josephrodriguez.Mediator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
@@ -11,6 +11,7 @@ import responses.EchoResponse;
 
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -106,6 +107,20 @@ class RequestHandlerTest {
 
                    assertEquals(EchoResponse.class, response.getClass());
                    assertEquals(request.getMessage(), response.getMessage());
+                });
+    }
+
+    @Test
+    void shouldThrowCompletionException() {
+        final ApplicationContextRunner contextRunner = new ApplicationContextRunner();
+
+        contextRunner.withUserConfiguration(SpringBootMediatorAutoConfiguration.class)
+                .run( context -> {
+                    Mediator mediator = context.getBean(Mediator.class);
+                    EchoRequest request = new EchoRequest("Hi Mediator");
+                    CompletableFuture<EchoResponse> response = mediator.sendAsync(request);
+
+                    assertThrows(CompletionException.class, () -> response.join());
                 });
     }
 }

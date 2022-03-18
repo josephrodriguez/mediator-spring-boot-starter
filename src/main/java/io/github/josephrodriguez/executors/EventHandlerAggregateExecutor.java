@@ -27,10 +27,6 @@ public class EventHandlerAggregateExecutor<T extends Event> {
      * @param event The event that will be handled for the EventHandler collection
      */
     public void handle(T event) {
-
-        if(event == null)
-            throw new IllegalArgumentException("Undefined event instance.");
-
         handlers.forEach(handler -> handler.handle(event));
     }
 }

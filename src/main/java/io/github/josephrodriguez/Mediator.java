@@ -1,4 +1,4 @@
-package io.github.josephrodriguez.service;
+package io.github.josephrodriguez;
 
 import io.github.josephrodriguez.core.Lazy;
 import io.github.josephrodriguez.exceptions.UnsupportedEventException;
@@ -125,7 +125,6 @@ public class Mediator implements Publisher, Sender {
     }
 
     private ConcurrentMap<Class<?>, EventHandlerAggregateExecutor> getEventHandlersMap(ListableBeanFactory factory) {
-
         Map<Class<?>, EventHandlerAggregateExecutor> handlersMap = factory
                 .getBeansOfType(EventHandler.class)
                 .values()
@@ -141,7 +140,6 @@ public class Mediator implements Publisher, Sender {
     }
 
     private ConcurrentMap<Class<?>, RequestHandler> getRequestHandlers(ListableBeanFactory factory) {
-
         Map<Class<?>, RequestHandler> map = factory
                 .getBeansOfType(RequestHandler.class)
                 .values()
@@ -159,7 +157,6 @@ public class Mediator implements Publisher, Sender {
      * @return
      */
     private Class<?> getEventHandlerTypeArgument(Class<?> handlerClazz) {
-
         Optional<ParameterizedType> eventHandlerInterface = getGenericInterfaceParameterizedType(
                 handlerClazz,
                 EventHandler.class);
@@ -176,7 +173,6 @@ public class Mediator implements Publisher, Sender {
      * @return
      */
     private Class<?> getRequestHandlerTypeArgument(Class<?> handlerClazz) {
-
         Optional<ParameterizedType> requestHandlerInterface = getGenericInterfaceParameterizedType(
                 handlerClazz,
                 RequestHandler.class);
