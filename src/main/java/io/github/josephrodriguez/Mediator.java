@@ -4,6 +4,7 @@ import io.github.josephrodriguez.core.Lazy;
 import io.github.josephrodriguez.exceptions.UnsupportedEventException;
 import io.github.josephrodriguez.exceptions.UnsupportedRequestException;
 import io.github.josephrodriguez.executors.EventHandlerAggregateExecutor;
+import io.github.josephrodriguez.executors.RequestHandlerAggregateExecutor;
 import io.github.josephrodriguez.interfaces.*;
 import org.springframework.beans.factory.ListableBeanFactory;
 
@@ -33,7 +34,7 @@ public class Mediator implements Publisher, Sender {
     /**
      *
      */
-    private final Lazy<ConcurrentMap<Class<?>, RequestHandler>> requestHandlersMap;
+    private final Lazy<ConcurrentMap<Class<?>, RequestHandlerAggregateExecutor>> requestHandlersMap;
 
     /**
      * @param factory Instance of {@link ListableBeanFactory} to list the EventHandler and RequestHandler beans
@@ -110,11 +111,11 @@ public class Mediator implements Publisher, Sender {
         if (unsupportedRequest)
             throw new UnsupportedRequestException(requestClazz);
 
-        RequestHandler<Request<T>, T> handler = requestHandlersMap
+        RequestHandlerAggregateExecutor<Request<T>, T> executor = requestHandlersMap
                 .get()
                 .get(requestClazz);
 
-        return handler.handle(request);
+        return executor.handle(request);
     }
 
     /**
