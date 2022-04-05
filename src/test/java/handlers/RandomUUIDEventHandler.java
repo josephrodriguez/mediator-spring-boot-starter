@@ -2,7 +2,9 @@ package handlers;
 
 import events.RandomUUIDEvent;
 import io.github.josephrodriguez.interfaces.EventHandler;
+import org.springframework.stereotype.Component;
 
+@Component
 public class RandomUUIDEventHandler implements EventHandler<RandomUUIDEvent> {
 
     @Override

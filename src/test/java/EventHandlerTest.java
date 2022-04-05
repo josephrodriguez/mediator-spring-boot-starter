@@ -1,6 +1,7 @@
 import events.DateTimeEvent;
 import events.RandomUUIDEvent;
 import handlers.DateTimeEventHandler1;
+import handlers.DateTimeEventHandler2;
 import handlers.RandomUUIDEventHandler;
 import io.github.josephrodriguez.config.SpringBootMediatorAutoConfiguration;
 import io.github.josephrodriguez.exceptions.UnsupportedEventException;
@@ -82,6 +83,7 @@ class EventHandlerTest {
 
         contextRunner.withUserConfiguration(SpringBootMediatorAutoConfiguration.class)
                 .withBean(DateTimeEventHandler1.class)
+                .withBean(DateTimeEventHandler2.class)
                 .run( context -> {
                     Mediator mediator = context.getBean(Mediator.class);
                     CompletableFuture<Void> future = mediator.publishAsync(null);
@@ -109,6 +111,23 @@ class EventHandlerTest {
 
         contextRunner.withUserConfiguration(SpringBootMediatorAutoConfiguration.class)
                 .withBean(DateTimeEventHandler1.class)
+                .run( context -> {
+                    Mediator mediator = context.getBean(Mediator.class);
+                    CompletableFuture<Void> future = mediator.publishAsync(new DateTimeEvent());
+
+                    assertNull(future.join());
+                    assertTrue(future.isDone());
+                });
+
+    }
+
+    @Test
+    void shouldCompleteMultipleHandlersAsync() {
+        final ApplicationContextRunner contextRunner = new ApplicationContextRunner();
+
+        contextRunner.withUserConfiguration(SpringBootMediatorAutoConfiguration.class)
+                .withBean(DateTimeEventHandler1.class)
+                .withBean(DateTimeEventHandler2.class)
                 .run( context -> {
                     Mediator mediator = context.getBean(Mediator.class);
                     CompletableFuture<Void> future = mediator.publishAsync(new DateTimeEvent());
