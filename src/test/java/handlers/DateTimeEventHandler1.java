@@ -2,7 +2,9 @@ package handlers;
 
 import events.DateTimeEvent;
 import io.github.josephrodriguez.interfaces.EventHandler;
+import org.springframework.stereotype.Component;
 
+@Component
 public class DateTimeEventHandler1 implements EventHandler<DateTimeEvent> {
 
     @Override
