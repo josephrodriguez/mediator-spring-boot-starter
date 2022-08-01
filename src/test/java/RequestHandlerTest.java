@@ -12,6 +12,7 @@ import responses.EchoResponse;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
+import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -121,6 +122,29 @@ class RequestHandlerTest {
                     CompletableFuture<EchoResponse> response = mediator.sendAsync(request);
 
                     assertThrows(CompletionException.class, () -> response.join());
+                });
+    }
+
+    @Test
+    void shouldHandleMultipleRequestsAsync() {
+        final ApplicationContextRunner contextRunner = new ApplicationContextRunner();
+
+        contextRunner.withUserConfiguration(SpringBootMediatorAutoConfiguration.class)
+                .withBean(EchoRequestHandler.class)
+                .run( context -> {
+                    Mediator mediator = context.getBean(Mediator.class);
+
+                    CompletableFuture[] futures =
+                            IntStream.range(0, 10)
+                                    .mapToObj(i -> new EchoRequest(((Integer) i).toString()))
+                                    .parallel()
+                                    .map(mediator::sendAsync)
+                                    .toArray(CompletableFuture[]::new);
+
+                    CompletableFuture<Void> aggregateFuture = CompletableFuture.allOf(futures);
+
+                    assertNull(aggregateFuture.join());
+                    assertTrue(aggregateFuture.isDone());
                 });
     }
 }
